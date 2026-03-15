@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Resume Analysis</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Resume Analysis Dashboard</h1>
+
+<h2>Predicted Job Role: {{role}}</h2>
+
+<h2 class="score">Resume Score: {{score}}%</h2>
+
+<h3>Detected Skills</h3>
+
+<ul>
+
+{% for skill in skills %}
+<li>{{skill}}</li>
+{% endfor %}
+
+</ul>
+
+<h3>Missing Skills</h3>
+
+<ul>
+
+{% for skill in missing %}
+<li>{{skill}}</li>
+{% endfor %}
+
+</ul>
+
+<h3>AI Feedback</h3>
+
+<p>{{feedback}}</p>
+
+<h3>Skill Match Percentage</h3>
+
+<canvas id="skillChart" width="400" height="200"></canvas>
+
+<br>
+
+<a href="/">Analyze Another Resume</a>
+
+</div>
+
+<script>
+
+var roleScores = {{ role_scores | tojson }};
+
+var labels = Object.keys(roleScores);
+var data = Object.values(roleScores);
+
+var ctx = document.getElementById('skillChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Skill Match %',
+            data: data
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100
+            }
+        }
+    }
+});
+
+</script>
+
+</body>
+</html>
